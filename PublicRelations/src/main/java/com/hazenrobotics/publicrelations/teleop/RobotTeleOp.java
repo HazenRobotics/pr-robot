@@ -1,20 +1,18 @@
-package com.hazenrobotics.teamcode.teleop;
+package com.hazenrobotics.publicrelations.teleop;
 
 import com.hazenrobotics.commoncode.input.ButtonManager;
 import com.hazenrobotics.commoncode.input.Toggle;
 import com.hazenrobotics.commoncode.interfaces.OpModeInterface;
 import com.hazenrobotics.commoncode.movement.DrivingController;
-import com.hazenrobotics.commoncode.movement.TankControlsDrivingController;
-import com.hazenrobotics.commoncode.movement.TwoWheels;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DigitalChannel;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareDevice;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @TeleOp(name="PR Teleop", group="PR")
 public class RobotTeleOp extends LinearOpMode implements OpModeInterface {
@@ -48,24 +46,7 @@ public class RobotTeleOp extends LinearOpMode implements OpModeInterface {
             buttons.update();
 
         drive();
-        buttons.add(new Toggle() {
-            @Override
-            public void onActivate() {
-                basket.setTargetPosition(620);
-                basket.setPower(1.0);
-            }
-
-            @Override
-            public void onDeactivate() {
-                basket.setTargetPosition(120);
-                basket.setPower(-1.0);
-            }
-
-            @Override
-            public boolean isInputPressed() {
-                return gamepad1.a;
-            }
-        });
+        basket.setPower(gamepad1.left_stick_y/9);
 
 
         telemetry.addData("Basket Position:", basket.getCurrentPosition());
@@ -79,7 +60,6 @@ public class RobotTeleOp extends LinearOpMode implements OpModeInterface {
     protected void setupHardware() {
         //Initializes the motor/servo variables here
         basket = getMotor("basket");
-        basket.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         basket.setDirection(DcMotor.Direction.REVERSE);
 
         leftFront = getMotor("leftFront");
@@ -121,6 +101,25 @@ public class RobotTeleOp extends LinearOpMode implements OpModeInterface {
         rightFront.setPower(rightFrontPower);
         leftBack.setPower(leftBackPower);
         rightBack.setPower(rightBackPower);
+
+    }
+
+    protected void debugging(){
+        leftFront.setPower(-gamepad1.left_stick_y);
+        leftBack.setPower(-gamepad2.left_stick_y);
+        rightFront.setPower(-gamepad1.right_stick_y);
+        rightBack.setPower(-gamepad2.right_stick_y);
+        telemetry.addData("Left Forward Power:", " " + leftFront.getPower());
+        telemetry.addData("Right Forward Power:", " " + rightFront.getPower());
+        telemetry.addData("Left Backward Power:", " " + leftBack.getPower());
+        telemetry.addData("Right Backward Power:", " " + rightBack.getPower());
+        telemetry.update();
+        idle();
+    }
+
+    @Override
+    public Telemetry getTelemetry() {
+        return null;
     }
 
     @Override
