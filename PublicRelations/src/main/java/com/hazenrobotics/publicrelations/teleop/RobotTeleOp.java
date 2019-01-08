@@ -45,12 +45,11 @@ public class RobotTeleOp extends LinearOpMode implements OpModeInterface {
         while (opModeIsActive()) {
             buttons.update();
 
-        drive();
-        basket.setPower(gamepad1.left_stick_y/9);
+            drive();
+            basket.setPower(gamepad1.left_stick_y/9);
 
 
-        telemetry.addData("Basket Position:", basket.getCurrentPosition());
-
+            telemetry.addData("Basket Position:", basket.getCurrentPosition());
 
 
             telemetry.update();
